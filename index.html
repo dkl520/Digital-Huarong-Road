@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字华容道</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+
+<body>
+
+    <h1>数字华容道</h1>
+    <p>点击数字方块移动到空格位置，尝试按照从小到大的顺序排列。</p>
+
+    <div id="step-counter">步数: 0</div>
+    <div id="settings">
+        <!-- onclick="startGame()" -->
+        <button id="start-button">启动！</button>
+        <label for="grid-size">选择阶数：</label>
+        <select id="grid-size">
+            <!-- onchange="changeGridSize" -->
+            <option value="3">3x3</option>
+            <option value="4">4x4</option>
+            <option value="5">5x5</option>
+            <option value="6">6x6</option>
+            <option value="7">7x7</option>
+            <option value="8">8x8</option>
+        </select>
+    </div>
+    <div id="puzzle-container"></div>
+
+    <script type="module" src="./index.js"></script>
+    <script type="module" src="./top2.js"></script>
+
+    <!-- <div id="puzzle-container">
+        <div class="puzzle-piece">3</div>
+        <div class="puzzle-piece">5</div>
+        <div class="puzzle-piece">7</div>
+        <div class="puzzle-piece">4</div>
+        <div class="puzzle-piece">2</div>
+        <div class="puzzle-piece">8</div>
+        <div class="puzzle-piece">1</div>
+        <div class="puzzle-piece">6</div>
+        <div class="puzzle-piece"></div>
+    </div> -->
+
+
+
+</body>
+
+</html>
