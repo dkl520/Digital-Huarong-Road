@@ -3,7 +3,7 @@
 const puzzleContainer = document.getElementById('puzzle-container');
 const stepCounter = document.getElementById('step-counter');
 let steps = 0;
-let gridSize = 3;  // 初始阶数
+let gridSize = 4;  // 初始阶数
 let puzzleState = generatePuzzleState(gridSize);
 let goalState = generatePuzzleState(gridSize);
 randomPuzzle();
@@ -33,7 +33,12 @@ function changeGridSize() {
     randomPuzzle();
     renderPuzzle();
 }
+
+
+
 document.getElementById("grid-size").addEventListener('change', () => changeGridSize());
+
+
 
 
 // function renderPuzzle() {
@@ -73,6 +78,12 @@ function renderPuzzle() {
 
     stepCounter.textContent = `步数: ${steps}`;
 }
+
+
+document.getElementById("randomNum").addEventListener('click',()=> {
+    randomPuzzle();
+    renderPuzzle();
+} )
 
 
 function randomPuzzle() {
