@@ -81,15 +81,26 @@ class SearchA {
                 const currentPosition = this.findTarget(i, this.initialState);
                 this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
                 const targetNode = this.findTarget(i, this.goalState);
+
+                let zeroPosition = this.findTarget(0, this.initialState);
+                if (JSON.stringify(zeroPosition) == JSON.stringify(targetNode) && JSON.stringify(currentPosition) == JSON.stringify([targetNode[0] + 1, targetNode[1]])) {
+                    [this.initialState[currentPosition[0]][currentPosition[1]], this.initialState[zeroPosition[0]][zeroPosition[1]]] = [
+                        this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[currentPosition[0]][currentPosition[1]]
+                    ];
+                  await  movePiece(currentPosition[0],currentPosition[1]);
+                }
                 if (JSON.stringify(currentPosition) === JSON.stringify(targetNode)) {
-                    this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
                     continue;
                 }
                 let beforeNode = [targetNode[0] + 1, targetNode[1] - 1];
+                if (JSON.stringify(currentPosition) !== JSON.stringify(beforeNode)) {
+                    let targetPath = this.astar(currentPosition, beforeNode);
+                    await  this.actionMove(targetPath);
+                }
                 // let targetPath = [currentPosition, beforeNode];
-                let targetPath = this.astar(currentPosition, beforeNode);
+                // let targetPath = this.astar(currentPosition, beforeNode);
 
-                await this.actionMove(targetPath);
+                // await this.actionMove(targetPath);
                 await this.ZeroPathMove([targetNode[0] + 1, targetNode[1] - 2])
                 await this.lastOneMove([targetNode[0] + 1, targetNode[1] - 2]);
             } else {
@@ -101,15 +112,15 @@ class SearchA {
                     continue;
                 }
                 let targetPath = this.astar(currentPosition, targetNode);
-                await   this.actionMove(targetPath);
+                await this.actionMove(targetPath);
             }
         }
         let initialState = this.initialState.map(arr => arr.map(obj => obj.value)).slice(-2);
         let goalState = this.goalState.slice(-2);
         let solutionBottomTwo = solvePuzzle(initialState, goalState);
-        await   this.moveBottomTowLine(solutionBottomTwo)
+        await this.moveBottomTowLine(solutionBottomTwo)
     };
-    async   moveBottomTowLine(solutionBottomTwo) {
+    async moveBottomTowLine(solutionBottomTwo) {
         for (let i = 0; i < solutionBottomTwo.length; i++) {
             const { row, col } = solutionBottomTwo[i];
             const currentPosition = this.findTarget(0, this.initialState);
@@ -118,28 +129,28 @@ class SearchA {
             [this.initialState[currentPosition[0]][currentPosition[1]], this.initialState[nextRow][nextCol]] =
                 [this.initialState[nextRow][nextCol], this.initialState[currentPosition[0]][currentPosition[1]]];
 
-                await   movePiece(nextRow, nextCol);
+            await movePiece(nextRow, nextCol);
         }
 
     }
 
-  async  lastOneMove(originZero) {
+    async lastOneMove(originZero) {
         var nextStep;
         for (let i = 0; i < this.bottomlinePath.length; i++) {
             const element = this.bottomlinePath[i];
             nextStep = [element[0] + originZero[0], element[1] + originZero[1]];
 
-         await   movePiece(nextStep[0], nextStep[1]);
+            await movePiece(nextStep[0], nextStep[1]);
             [this.initialState[originZero[0]][originZero[1]], this.initialState[nextStep[0]][nextStep[1]]] = [this.initialState[nextStep[0]][nextStep[1]], this.initialState[originZero[0]][originZero[1]]];
             originZero = nextStep;
         }
     }
-    async   actionMove(targetPath) {
+    async actionMove(targetPath) {
         for (let i = 0; i < targetPath.length - 1; i++) {
-            await  this.ZeroPathMove(targetPath[i + 1]);
+            await this.ZeroPathMove(targetPath[i + 1]);
             const targetPosition = targetPath[i];
             const zeroPosition = targetPath[i + 1];
-            await  movePiece(targetPosition[0], targetPosition[1]);
+            await movePiece(targetPosition[0], targetPosition[1]);
             [
                 this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[targetPosition[0]][targetPosition[1]]
             ] = [
@@ -149,14 +160,17 @@ class SearchA {
     }
 
 
-    async  ZeroPathMove(targetPath) {
+    async ZeroPathMove(targetPath) {
         const zerotarget = targetPath;
         const initPosition = this.findTarget(0, this.initialState);
+        if (JSON.stringify(targetPath) == JSON.stringify(initPosition)) {
+            return;
+        }
         let zeroPath = this.astar(initPosition, zerotarget);
         for (let index = 0; index < zeroPath.length - 1; index++) {
             const zeroPosition = zeroPath[index];
             const numPosition = zeroPath[index + 1];
-            await    movePiece(numPosition[0], numPosition[1]);
+            await movePiece(numPosition[0], numPosition[1]);
             [this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[numPosition[0]][numPosition[1]]] = [this.initialState[numPosition[0]][numPosition[1]], this.initialState[zeroPosition[0]][zeroPosition[1]]]
         }
     }

@@ -81,6 +81,14 @@ class SearchA {
                 const currentPosition = this.findTarget(i, this.initialState);
                 this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
                 const targetNode = this.findTarget(i, this.goalState);
+
+                let zeroPosition = this.findTarget(0, this.initialState);
+                if (JSON.stringify(zeroPosition) == JSON.stringify(targetNode) && JSON.stringify(currentPosition) == JSON.stringify([targetNode[0] + 1, targetNode[1]])) {
+                    [this.initialState[currentPosition[0]][currentPosition[1]], this.initialState[zeroPosition[0]][zeroPosition[1]]] = [
+                        this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[currentPosition[0]][currentPosition[1]]
+                    ];
+                    movePiece(currentPosition[0],currentPosition[1]);
+                }
                 if (JSON.stringify(currentPosition) === JSON.stringify(targetNode)) {
                     this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
                     continue;
