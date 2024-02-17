@@ -101,6 +101,7 @@ class SearchA {
                 // let targetPath = this.astar(currentPosition, beforeNode);
 
                 // await this.actionMove(targetPath);
+                debugger
                 await this.ZeroPathMove([targetNode[0] + 1, targetNode[1] - 2])
                 await this.lastOneMove([targetNode[0] + 1, targetNode[1] - 2]);
             } else {

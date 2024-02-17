@@ -90,14 +90,13 @@ class SearchA {
                     movePiece(currentPosition[0],currentPosition[1]);
                 }
                 if (JSON.stringify(currentPosition) === JSON.stringify(targetNode)) {
-                    this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
                     continue;
                 }
                 let beforeNode = [targetNode[0] + 1, targetNode[1] - 1];
-                // let targetPath = [currentPosition, beforeNode];
-                let targetPath = this.astar(currentPosition, beforeNode);
-
-                 this.actionMove(targetPath);
+                if (JSON.stringify(currentPosition) !== JSON.stringify(beforeNode)) {
+                    let targetPath = this.astar(currentPosition, beforeNode);
+                      this.actionMove(targetPath);
+                }
                  this.ZeroPathMove([targetNode[0] + 1, targetNode[1] - 2])
                  this.lastOneMove([targetNode[0] + 1, targetNode[1] - 2]);
             } else {
