@@ -117,7 +117,7 @@ function randomPuzzle() {
         steps++;
         renderPuzzle();
        
-        await delay(600);
+        await delay(400);
         checkWin();
     }
 }
