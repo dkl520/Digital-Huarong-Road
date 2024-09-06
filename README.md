@@ -1,5 +1,5 @@
 # 数字华容道
-
+[web pages ](https://digital-huarong-road-gold.vercel.app/)
 数字华容道是一种数字益智游戏，灵感来自于传统的华容道游戏。在这个游戏中，你需要通过移动数字方块的位置，将它们按照升序或特定规则排列起来。这种游戏通常在一个方形的网格上进行，其中包含一个空白位置，你可以利用这个空白位置进行数字方块的移动。
 
 ## 基本规则
@@ -19,6 +19,7 @@
 
 
 # Sliding Puzzle (Huarong Dao)
+[web pages ](https://digital-huarong-road-gold.vercel.app/)
 The sliding puzzle is a number-based puzzle game, inspired by the traditional Huarong Dao game. In this game, you need to rearrange number blocks by moving them into the correct order, either in ascending sequence or according to specific rules. The game is typically played on a square grid, where there is one blank space that you can use to move the number blocks around.
 
 ##Basic Rules
@@ -38,3 +39,5 @@ The sliding puzzle is a number-based puzzle game, inspired by the traditional Hu
 ![演示图片](./demonstration.png)
 
 ![演示图片](./english_picture.png)
+
+
