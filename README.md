@@ -18,6 +18,23 @@
 - `bottomTwoStep.js` 包含了最后两行的实现，使用了A*搜索找到局部最优解。逻辑与前几行不同。
 
 
+# Sliding Puzzle (Huarong Dao)
+The sliding puzzle is a number-based puzzle game, inspired by the traditional Huarong Dao game. In this game, you need to rearrange number blocks by moving them into the correct order, either in ascending sequence or according to specific rules. The game is typically played on a square grid, where there is one blank space that you can use to move the number blocks around.
+
+##Basic Rules
+- The game board has a blank space and several number blocks, which start in a random order.
+- You can move the number blocks horizontally or vertically into the blank space to make moves.
+- The goal is to rearrange the blocks by moving them into the correct order, either from smallest to largest or - following certain specific rules.
+- Typically, the game tracks the number of moves you make, and the challenge is to complete the puzzle in as few moves as possible.
+- The sliding puzzle can exist both as a physical game in print or as a digital game, playable on computers, phones, or tablets. This kind of game helps develop logical thinking and problem-solving skills.
+
+## Code Implementation
+- `index.js` contains the main logic implementation.
+- `top2.js` handles the sorting of the first few rows using goal search and hard sorting.
+- `bottomTwoStep.js` implements the logic for the last two rows, using the A* search algorithm to find the locally optimal solution. The logic here differs from the earlier rows.
+
+
+
 ![演示图片](./demonstration.png)
 
 

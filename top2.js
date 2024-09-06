@@ -87,7 +87,7 @@ class SearchA {
                     [this.initialState[currentPosition[0]][currentPosition[1]], this.initialState[zeroPosition[0]][zeroPosition[1]]] = [
                         this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[currentPosition[0]][currentPosition[1]]
                     ];
-                  await  movePiece(currentPosition[0],currentPosition[1]);
+                    await movePiece(currentPosition[0], currentPosition[1]);
                 }
                 if (JSON.stringify(currentPosition) === JSON.stringify(targetNode)) {
                     continue;
@@ -95,7 +95,7 @@ class SearchA {
                 let beforeNode = [targetNode[0] + 1, targetNode[1] - 1];
                 if (JSON.stringify(currentPosition) !== JSON.stringify(beforeNode)) {
                     let targetPath = this.astar(currentPosition, beforeNode);
-                    await  this.actionMove(targetPath);
+                    await this.actionMove(targetPath);
                 }
                 // let targetPath = [currentPosition, beforeNode];
                 // let targetPath = this.astar(currentPosition, beforeNode);
