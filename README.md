@@ -21,6 +21,7 @@
 
 # Sliding Puzzle (Huarong Dao)
 - [web pages ](https://digital-huarong-road-gold.vercel.app/)
+
 The sliding puzzle is a number-based puzzle game, inspired by the traditional Huarong Dao game. In this game, you need to rearrange number blocks by moving them into the correct order, either in ascending sequence or according to specific rules. The game is typically played on a square grid, where there is one blank space that you can use to move the number blocks around.
 
 ##Basic Rules
