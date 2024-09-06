@@ -37,4 +37,4 @@ The sliding puzzle is a number-based puzzle game, inspired by the traditional Hu
 
 ![演示图片](./demonstration.png)
 
-
+![演示图片](./english_picture.png)
