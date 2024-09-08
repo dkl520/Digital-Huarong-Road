@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Puzzle</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #faf8ef;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #776e65;
+        }
+
+        p {
+            color: #776e65;
+        }
+
+        #puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 10px;
+            margin-top: 20px;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .puzzle-piece {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background-color: #eee4da;
+            color: #776e65;
+            border-radius: 12px;
+            cursor: pointer;
+            /* transition: background-color 0.2s ease-in-out; */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .puzzle-piece:hover {
+            background-color: #dcbba5;
+        }
+
+        #step-counter {
+            /* position: absolute; */
+            top: 20px;
+            left: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #faf8ef;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #776e65;
+        }
+
+        p {
+            color: #776e65;
+        }
+
+        #step-counter {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #settings {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #start-button {
+            background-color: #8f7a66;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #start-button:hover {
+            background-color: #5f4b3a;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        select {
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        /* #puzzle-container {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+        /* .puzzle-piece {
+    width: 100%;
+    padding: 20px;
+    font-size: 18px;
+    background-color: #eee4da;
+    color: #776e65;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+} */
+
+        .puzzle-piece:hover {
+            background-color: #dcbba5;
+        }
+
+        /* Add animation class when needed */
+        .puzzle-piece.animate {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Animate the puzzle piece movement */
+        .puzzle-piece.animate.move {
+            transform: translate(0, 0);
+        }
+
+
+        /* 添加新的样式 */
+        #settings {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #randomNum {
+            background-color: #8f7a66;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 30px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #randomNum:hover {
+            background-color: #5f4b3a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Sliding Puzzle</h1>
+    <p>Click on the number blocks to move them into the empty space. Try to arrange them in ascending order.</p>
+    <div id="line">
+        <button id="randomNum">Start</button>
+        <div id="step-counter">Steps: 0</div>
+    </div>
+    <div id="settings">
+        <button id="start-button">AI Assistant</button>
+        <label for="grid-size">Choose grid size:</label>
+        <select id="grid-size">
+            <option value="3">3x3</option>
+            <option value="4" selected>4x4</option>
+            <option value="5">5x5</option>
+            <option value="6">6x6</option>
+            <option value="7">7x7</option>
+            <option value="8">8x8</option>
+        </select>
+    </div>
+    <div id="puzzle-container"></div>
+
+
+    <script>
+
+        // 初始化数字华容道
+        const puzzleContainer = document.getElementById('puzzle-container');
+        const stepCounter = document.getElementById('step-counter');
+        let steps = 0;
+        let gridSize = 4;  // 初始阶数
+        let puzzleState = generatePuzzleState(gridSize);
+        let goalState = generatePuzzleState(gridSize);
+        randomPuzzle();
+        renderPuzzle();
+        function generatePuzzleState(size) {
+            let puzzleState = [];
+            let counter = 1;
+
+            for (let i = 0; i < size; i++) {
+                let row = [];
+                for (let j = 0; j < size; j++) {
+                    row.push(counter++);
+                }
+                puzzleState.push(row);
+            }
+
+            puzzleState[size - 1][size - 1] = 0; // Set the last element as null
+            return puzzleState;
+        }
+
+        function changeGridSize() {
+            gridSize = parseInt(document.getElementById('grid-size').value);
+            puzzleState = generatePuzzleState(gridSize);
+            goalState = generatePuzzleState(gridSize);
+            steps = 0;
+            document.getElementById("puzzle-container").style.gridTemplateColumns = `repeat(${gridSize}, 80px)`;
+            randomPuzzle();
+            renderPuzzle();
+        }
+
+
+
+        document.getElementById("grid-size").addEventListener('change', () => changeGridSize());
+
+
+
+
+        // function renderPuzzle() {
+        //     puzzleContainer.innerHTML = '';
+        //     puzzleState.forEach((row, rowIndex) => {
+        //         row.forEach((number, colIndex) => {
+        //             const piece = document.createElement('div');
+        //             piece.className = 'puzzle-piece';
+        //             piece.textContent = number !== 0 ? number : '';
+        //             piece.addEventListener('click', () => movePiece(rowIndex, colIndex));
+        //             puzzleContainer.appendChild(piece);
+        //         });
+        //     });
+
+        //     stepCounter.textContent = `步数: ${steps}`;
+        // }
+
+        function renderPuzzle() {
+            const fragment = document.createDocumentFragment();
+
+            puzzleState.forEach((row, rowIndex) => {
+                row.forEach((number, colIndex) => {
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    piece.textContent = number !== 0 ? number : '';
+                    piece.addEventListener('click', () => movePiece(rowIndex, colIndex));
+                    fragment.appendChild(piece);
+                });
+            });
+
+            // 移除旧的子元素
+            while (puzzleContainer.firstChild) {
+                puzzleContainer.removeChild(puzzleContainer.firstChild);
+            }
+            // 添加新的子元素
+            puzzleContainer.appendChild(fragment);
+
+            stepCounter.textContent = `步数: ${steps}`;
+        }
+
+
+        document.getElementById("randomNum").addEventListener('click', () => {
+            randomPuzzle();
+            renderPuzzle();
+        })
+
+
+        function randomPuzzle() {
+            for (let i = 0; i < 1000; i++) {
+                const emptyPosition = findEmptyPosition();
+                const adjacentPositions = getAdjacentPositions(emptyPosition);
+                let { row, col } = adjacentPositions[Math.floor(Math.random() * adjacentPositions.length)];
+                puzzleState[emptyPosition.row][emptyPosition.col] = puzzleState[row][col];
+                puzzleState[row][col] = 0;
+
+            }
+        }
+        // function movePiece(row, col) {
+        //     const emptyPosition = findEmptyPosition();
+        //     const adjacentPositions = getAdjacentPositions(emptyPosition);
+        //     if (adjacentPositions.some(pos => pos.row === row && pos.col === col)) {
+        //         puzzleState[emptyPosition.row][emptyPosition.col] = puzzleState[row][col];
+        //         puzzleState[row][col] = 0;
+        //         steps++;
+        //         renderPuzzle();
+        //         checkWin();
+        //         setTimeout(() => {
+        //             // 这里放置需要延迟执行的代码
+        //         }, 1000);
+        //     }
+        // }
+
+        async function movePiece(row, col) {
+            const emptyPosition = findEmptyPosition();
+            const adjacentPositions = getAdjacentPositions(emptyPosition);
+
+            if (adjacentPositions.some(pos => pos.row === row && pos.col === col)) {
+                // 获取被点击的方块元素
+                const clickedPiece = document.querySelector(`#puzzle-container .puzzle-piece:nth-child(${row * 3 + col + 1})`);
+                // 添加动画类名
+                clickedPiece.classList.add('animate');
+
+                // 更新数据模型
+                puzzleState[emptyPosition.row][emptyPosition.col] = puzzleState[row][col];
+                puzzleState[row][col] = 0;
+
+                steps++;
+                renderPuzzle();
+
+                await delay(400);
+                checkWin();
+            }
+        }
+
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function findEmptyPosition() {
+            for (let row = 0; row < puzzleState.length; row++) {
+                for (let col = 0; col < puzzleState[row].length; col++) {
+                    if (puzzleState[row][col] === 0) {
+                        return { row, col };
+                    }
+                }
+            }
+        }
+
+        function getAdjacentPositions(position) {
+            const { row, col } = position;
+            const adjacentPositions = [];
+
+            if (row > 0) adjacentPositions.push({ row: row - 1, col });
+            if (row < puzzleState.length - 1) adjacentPositions.push({ row: row + 1, col });
+            if (col > 0) adjacentPositions.push({ row, col: col - 1 });
+            if (col < puzzleState[row].length - 1) adjacentPositions.push({ row, col: col + 1 });
+
+            return adjacentPositions;
+        }
+
+        function checkWin() {
+            const flattenedState = puzzleState.flat();
+            if (flattenedState.every((number, index) => number === index + 1 || number === 0)) {
+                alert(`恭喜！你赢了！\n总步数: ${steps}`);
+            }
+        }
+        window.moveList = [];
+
+        // 定义一个MinHeap类，用于实现最小堆数据结构  
+        // 在最小堆中，优先级小的元素排在前面，所以是从小到大排序。
+        class MinHeap {
+            // 构造函数，初始化堆的数组为空  
+            constructor() {
+                this.heap = [];
+            }
+            // 向堆中添加一个节点  
+            push(node) {
+                // 将节点添加到堆数组的末尾  
+                this.heap.push(node);
+                // 调用heapifyUp方法，确保堆的性质得到维护  
+                this.heapifyUp();
+            }
+
+            // 从堆中移除并返回根节点（具有最小优先级的节点）  
+            pop() {
+                // 如果堆为空，则返回null  
+                if (this.isEmpty()) {
+                    return null;
+                }
+
+                // 获取并存储根节点  
+                const root = this.heap[0];
+                // 移除堆数组的最后一个节点并将其赋值给根节点  
+                const lastNode = this.heap.pop();
+
+                // 如果堆不为空，则将最后一个节点移动到根节点，并调用heapifyDown方法，确保堆的性质得到维护  
+                if (this.heap.length > 0) {
+                    this.heap[0] = lastNode;
+                    this.heapifyDown();
+                }
+
+                // 返回根节点  
+                return root;
+            }
+            clear() {
+                this.heap = [];
+            }
+            // 从下往上调整堆，确保堆的性质得到维护  
+            heapifyUp() {
+                // 初始化当前节点为堆数组的最后一个节点  
+                let currentIdx = this.heap.length - 1;
+
+                // 当当前节点不是根节点时，循环执行以下操作  
+                while (currentIdx > 0) {
+                    // 计算当前节点的父节点索引  
+                    const parentIdx = Math.floor((currentIdx - 1) / 2);
+                    // 如果当前节点的优先级小于其父节点的优先级，则交换它们的位置  
+                    if (this.heap[currentIdx].getPriority() < this.heap[parentIdx].getPriority()) {
+                        [this.heap[currentIdx], this.heap[parentIdx]] = [this.heap[parentIdx], this.heap[currentIdx]];
+                        // 更新当前节点为父节点，继续向上调整  
+                        currentIdx = parentIdx;
+                    } else {
+                        // 如果当前节点的优先级不小于其父节点的优先级，则停止向上调整  
+                        break;
+                    }
+                }
+            }
+
+            // 从上往下调整堆，确保堆的性质得到维护  
+            heapifyDown() {
+                // 初始化当前节点为根节点  
+                let currentIdx = 0;
+
+                // 无限循环，直到堆的性质得到满足  
+                while (true) {
+                    // 计算左孩子节点的索引  
+                    const leftChildIdx = 2 * currentIdx + 1;
+                    // 计算右孩子节点的索引  
+                    const rightChildIdx = 2 * currentIdx + 2;
+                    // 初始化最小孩子节点为当前节点  
+                    let smallestChildIdx = currentIdx;
+
+                    // 如果左孩子节点存在且其优先级小于当前节点的优先级，则更新最小孩子节点为左孩子节点  
+                    if (leftChildIdx < this.heap.length && this.heap[leftChildIdx].getPriority() < this.heap[smallestChildIdx].getPriority()) {
+                        smallestChildIdx = leftChildIdx;
+                    }
+
+                    // 如果右孩子节点存在且其优先级小于当前节点的优先级，则更新最小孩子节点为右孩子节点  
+                    if (rightChildIdx < this.heap.length && this.heap[rightChildIdx].getPriority() < this.heap[smallestChildIdx].getPriority()) {
+                        smallestChildIdx = rightChildIdx;
+                    }
+
+                    // 如果最小孩子节点不是当前节点，则交换它们的位置，并继续向下调整  
+                    if (smallestChildIdx !== currentIdx) {
+                        [this.heap[currentIdx], this.heap[smallestChildIdx]] = [this.heap[smallestChildIdx], this.heap[currentIdx]];
+                        // 更新当前节点为最小孩子节点，继续向下调整  
+                        currentIdx = smallestChildIdx;
+                    } else {
+                        // 如果最小孩子节点是当前节点，则堆的性质已经得到满足，停止向下调整  
+                        break;
+                    }
+                }
+            }
+
+            // 检查堆是否为空  
+            isEmpty() {
+                // 如果堆数组的长度为0，则返回true，表示堆为空；否则返回false  
+                return this.heap.length === 0;
+            }
+        }
+
+        // import { movePiece } from './index.js';
+        class PuzzleNode {
+            constructor(state, parent, move, cost, goalState, onelineLength) {
+                this.state = state;
+                this.parent = parent;
+                this.move = move;
+                this.cost = cost;
+                this.goalState = goalState;
+                this.onelineLength = onelineLength;
+                this.heuristic = this.calculateHeuristic();
+            }
+
+            calculateHeuristic() {
+                let heuristic = 0;
+                for (let i = 0; i < this.state.length; i++) {
+                    for (let j = 0; j < this.state[i].length; j++) {
+                        const currentValue = this.state[i][j];
+                        if (currentValue !== this.goalState[i][j] && currentValue !== 0) {
+                            const goalIndex = this.findIndex(this.goalState, currentValue);
+                            const distance =
+                                Math.abs(i - goalIndex.row) + Math.abs(j - goalIndex.col);
+                            heuristic += distance;
+                        }
+                    }
+                }
+                return heuristic;
+            }
+
+            findIndex(matrix, value) {
+                for (let i = 0; i < matrix.length; i++) {
+                    for (let j = 0; j < matrix[i].length; j++) {
+                        if (matrix[i][j] === value) {
+                            return { row: i, col: j };
+                        }
+                    }
+                }
+                return null;
+            }
+
+            getPriority() {
+                return this.cost + this.heuristic;
+            }
+        }
+
+        function solvePuzzle(initialState, goalState) {
+            const isValidMove = (position, move, numRows, numCols) => {
+                const newPosition = {
+                    row: position.row + move.row,
+                    col: position.col + move.col
+                };
+                return (
+                    newPosition.row >= 0 &&
+                    newPosition.row < numRows &&
+                    newPosition.col >= 0 &&
+                    newPosition.col < numCols
+                );
+            };
+
+            const getNeighbors = (node, numRows, numCols) => {
+                const neighbors = [];
+                const position = node.findIndex(node.state, 0);
+                const moves = [{ row: -1, col: 0 }, { row: 1, col: 0 }, { row: 0, col: -1 }, { row: 0, col: 1 }];
+
+                moves.forEach((move) => {
+                    if (isValidMove(position, move, numRows, numCols)) {
+                        const newState = JSON.parse(JSON.stringify(node.state)); // Deep copy the state
+                        [newState[position.row][position.col], newState[position.row + move.row][position.col + move.col]] =
+                            [newState[position.row + move.row][position.col + move.col], newState[position.row][position.col]];
+                        const newNode = new PuzzleNode(newState, node, move, node.cost + 1, goalState);
+                        neighbors.push(newNode);
+                    }
+                });
+
+                return neighbors;
+            };
+
+            const astar = () => {
+                const openSet = new MinHeap();
+                openSet.push(new PuzzleNode(initialState, null, null, 0, goalState));
+                const closedSet = new Set();
+
+                while (!openSet.isEmpty()) {
+                    const current = openSet.pop();
+
+                    if (JSON.stringify(current.state) === JSON.stringify(goalState)) {
+                        const path = [];
+                        let currentNode = current;
+                        while (currentNode.parent !== null) {
+                            path.unshift(currentNode.move);
+                            currentNode = currentNode.parent;
+                        }
+                        return path;
+                    }
+
+                    const key = JSON.stringify(current.state);
+                    if (!closedSet.has(key)) {
+                        closedSet.add(key);
+                        const numRows = current.state.length;
+                        const numCols = current.state[0].length;
+
+                        getNeighbors(current, numRows, numCols).forEach((neighbor) => {
+                            const neighborKey = JSON.stringify(neighbor.state);
+                            if (!closedSet.has(neighborKey)) {
+                                openSet.push(neighbor);
+                            }
+                        });
+                    }
+                }
+                return null;
+            };
+
+            return astar();
+        }
+
+
+
+
+
+
+        class PuzzleNodeFloat {
+            constructor(xAxios, yAxios, target, parent) {
+                this.xAxios = xAxios;
+                this.yAxios = yAxios;
+                this.position = [yAxios, xAxios];
+                this.parent = parent;
+                this.targetNode = target;
+                this.state = 'float';
+                this.cost = this.calcCost();
+            }
+            calcCost() {
+                // 计算曼哈顿距离
+                return Math.abs(this.yAxios - this.targetNode[0]) + Math.abs(this.xAxios - this.targetNode[1]);
+            }
+        }
+
+        class SearchA {
+            constructor(initialState, goalState) {
+                this.initialState = initialState;
+                this.goalState = goalState;
+                this.m = this.goalState.length;
+                this.n = this.goalState[0].length;
+                this.proityQueue = new Array();
+                this.bottomlinePath = [
+                    [-1, 0], [0, 1], [1, 0], [0, 1], [-1, 0], [0, -1], [0, -1], [1, 0]
+                ];
+            }
+            findTarget(target, state) {
+                for (let i = 0; i < this.m; i++) {
+                    for (let j = 0; j < this.n; j++) {
+                        if (target == state[i][j] || target == state[i][j].value) {
+                            return [i, j];
+                        }
+                    }
+                }
+            }
+            getNeighbors(parent, target) {
+                let x = [0, 0, 1, -1];
+                let y = [-1, 1, 0, 0];
+                let neighborList = new Array();
+                for (let i = 0; i < x.length; i++) {
+                    let xAxios = x[i] + parent.xAxios;
+                    let yAxios = y[i] + parent.yAxios;
+                    neighborList.push([yAxios, xAxios]);
+                }
+                let m = this.m;
+                let n = this.n;
+                let initialState = this.initialState;
+                let validneighborList = isValid(neighborList);
+                function isValid(neighborList) {
+                    return neighborList.filter(([yAxios, xAxios]) => {
+                        if (0 <= yAxios && yAxios < m &&
+                            xAxios >= 0 && xAxios < n
+                            && initialState[yAxios][xAxios].nodeStatus == 'float'
+                        ) {
+                            return [yAxios, xAxios];
+
+                        }
+                    })
+                }
+                function generateNodeList(target, validneighborList, parent) {
+                    let list = new Array();
+                    for (let i = 0; i < validneighborList.length; i++) {
+                        const element = validneighborList[i];
+                        let neighborNode = new PuzzleNodeFloat(element[1], element[0], target, parent)
+                        list.push(neighborNode)
+                    }
+                    return list;
+                };
+                return generateNodeList(target, validneighborList, parent);
+
+            }
+            async run() {
+                let m = this.m;
+                let endpoint = m * m - m * 2;
+                for (let i = 1; i <= endpoint; i++) {
+
+                    if (i % m == 0) {
+                        const currentPosition = this.findTarget(i, this.initialState);
+                        this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
+                        const targetNode = this.findTarget(i, this.goalState);
+
+                        let zeroPosition = this.findTarget(0, this.initialState);
+                        if (JSON.stringify(zeroPosition) == JSON.stringify(targetNode) && JSON.stringify(currentPosition) == JSON.stringify([targetNode[0] + 1, targetNode[1]])) {
+                            [this.initialState[currentPosition[0]][currentPosition[1]], this.initialState[zeroPosition[0]][zeroPosition[1]]] = [
+                                this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[currentPosition[0]][currentPosition[1]]
+                            ];
+                            await movePiece(currentPosition[0], currentPosition[1]);
+                        }
+                        if (JSON.stringify(currentPosition) === JSON.stringify(targetNode)) {
+                            continue;
+                        }
+                        let beforeNode = [targetNode[0] + 1, targetNode[1] - 1];
+                        if (JSON.stringify(currentPosition) !== JSON.stringify(beforeNode)) {
+                            let targetPath = this.astar(currentPosition, beforeNode);
+                            await this.actionMove(targetPath);
+                        }
+                        // let targetPath = [currentPosition, beforeNode];
+                        // let targetPath = this.astar(currentPosition, beforeNode);
+
+                        // await this.actionMove(targetPath);
+                        debugger
+                        await this.ZeroPathMove([targetNode[0] + 1, targetNode[1] - 2])
+                        await this.lastOneMove([targetNode[0] + 1, targetNode[1] - 2]);
+                    } else {
+                        const currentPosition = this.findTarget(i, this.initialState);
+                        this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
+                        const targetNode = this.findTarget(i, this.goalState);
+                        if (JSON.stringify(currentPosition) === JSON.stringify(targetNode)) {
+                            this.initialState[currentPosition[0]][currentPosition[1]].nodeStatus = 'block';
+                            continue;
+                        }
+                        let targetPath = this.astar(currentPosition, targetNode);
+                        await this.actionMove(targetPath);
+                    }
+                }
+                let initialState = this.initialState.map(arr => arr.map(obj => obj.value)).slice(-2);
+                let goalState = this.goalState.slice(-2);
+                let solutionBottomTwo = solvePuzzle(initialState, goalState);
+                await this.moveBottomTowLine(solutionBottomTwo)
+            };
+            async moveBottomTowLine(solutionBottomTwo) {
+                for (let i = 0; i < solutionBottomTwo.length; i++) {
+                    const { row, col } = solutionBottomTwo[i];
+                    const currentPosition = this.findTarget(0, this.initialState);
+                    let nextRow = row + currentPosition[0];
+                    let nextCol = col + currentPosition[1];
+                    [this.initialState[currentPosition[0]][currentPosition[1]], this.initialState[nextRow][nextCol]] =
+                        [this.initialState[nextRow][nextCol], this.initialState[currentPosition[0]][currentPosition[1]]];
+
+                    await movePiece(nextRow, nextCol);
+                }
+
+            }
+
+            async lastOneMove(originZero) {
+                var nextStep;
+                for (let i = 0; i < this.bottomlinePath.length; i++) {
+                    const element = this.bottomlinePath[i];
+                    nextStep = [element[0] + originZero[0], element[1] + originZero[1]];
+
+                    await movePiece(nextStep[0], nextStep[1]);
+                    [this.initialState[originZero[0]][originZero[1]], this.initialState[nextStep[0]][nextStep[1]]] = [this.initialState[nextStep[0]][nextStep[1]], this.initialState[originZero[0]][originZero[1]]];
+                    originZero = nextStep;
+                }
+            }
+            async actionMove(targetPath) {
+                for (let i = 0; i < targetPath.length - 1; i++) {
+                    await this.ZeroPathMove(targetPath[i + 1]);
+                    const targetPosition = targetPath[i];
+                    const zeroPosition = targetPath[i + 1];
+                    await movePiece(targetPosition[0], targetPosition[1]);
+                    [
+                        this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[targetPosition[0]][targetPosition[1]]
+                    ] = [
+                            this.initialState[targetPosition[0]][targetPosition[1]], this.initialState[zeroPosition[0]][zeroPosition[1]]
+                        ]
+                }
+            }
+
+
+            async ZeroPathMove(targetPath) {
+                const zerotarget = targetPath;
+                const initPosition = this.findTarget(0, this.initialState);
+                if (JSON.stringify(targetPath) == JSON.stringify(initPosition)) {
+                    return;
+                }
+                let zeroPath = this.astar(initPosition, zerotarget);
+                for (let index = 0; index < zeroPath.length - 1; index++) {
+                    const zeroPosition = zeroPath[index];
+                    const numPosition = zeroPath[index + 1];
+                    await movePiece(numPosition[0], numPosition[1]);
+                    [this.initialState[zeroPosition[0]][zeroPosition[1]], this.initialState[numPosition[0]][numPosition[1]]] = [this.initialState[numPosition[0]][numPosition[1]], this.initialState[zeroPosition[0]][zeroPosition[1]]]
+                }
+            }
+            astar(initPosition, targetNode) {
+
+                let closeSet = new Set();
+                let openSet = new Array();
+                let initNode = new PuzzleNodeFloat(initPosition[1], initPosition[0], targetNode, null);
+                openSet = [...this.getNeighbors(initNode, targetNode), ...openSet];
+                while (openSet.length > 0) {
+                    openSet.sort((a, b) => a.cost - b.cost);
+                    let currentNode = openSet.shift();
+
+                    if (JSON.stringify(currentNode.position) == JSON.stringify(targetNode)) {
+                        let path = [];
+                        let node = currentNode;
+                        while (node) {
+                            path.unshift(node.position);
+                            node = node.parent;
+                        }
+                        return path;
+                    }
+
+                    const key = JSON.stringify(currentNode.position);
+                    if (!closeSet.has(key)) {
+                        closeSet.add(key);
+                        openSet = [...this.getNeighbors(currentNode, targetNode), ...openSet];
+
+                    }
+                }
+                return null;
+            }
+        }
+
+
+        class Node {
+            constructor(value, position) {
+                // this.position = position;
+                this.nodeStatus = 'float';
+                this.value = value
+            }
+        }
+
+        function formaPuzzle(state) {
+            return state.map((arr, i) => arr.map((v, j) => new Node(v, [i, j])));
+        }
+        // formaPuzzle(initialState);
+
+
+
+        async function buttonStart() {
+            let sA = new SearchA(formaPuzzle(puzzleState), goalState);
+
+            await sA.run();
+        }
+        document.getElementById("start-button").addEventListener('click', () => buttonStart());
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>

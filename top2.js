@@ -1,6 +1,6 @@
 import solvePuzzle from "./bottomTowSteps.js";
 import { puzzleState, movePiece, goalState } from "./index.js";
-class PuzzleNode {
+class PuzzleNodeFloat {
     constructor(xAxios, yAxios, target, parent) {
         this.xAxios = xAxios;
         this.yAxios = yAxios;
@@ -64,7 +64,7 @@ class SearchA {
             let list = new Array();
             for (let i = 0; i < validneighborList.length; i++) {
                 const element = validneighborList[i];
-                let neighborNode = new PuzzleNode(element[1], element[0], target, parent)
+                let neighborNode = new PuzzleNodeFloat(element[1], element[0], target, parent)
                 list.push(neighborNode)
             }
             return list;
@@ -179,7 +179,7 @@ class SearchA {
 
         let closeSet = new Set();
         let openSet = new Array();
-        let initNode = new PuzzleNode(initPosition[1], initPosition[0], targetNode, null);
+        let initNode = new PuzzleNodeFloat(initPosition[1], initPosition[0], targetNode, null);
         openSet = [...this.getNeighbors(initNode, targetNode), ...openSet];
         while (openSet.length > 0) {
             openSet.sort((a, b) => a.cost - b.cost);
